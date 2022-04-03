@@ -1,4 +1,5 @@
 import client
+from detector import Detector
 import socket
 from getpass import getpass
 from mysql.connector import connect, Error
@@ -13,6 +14,9 @@ def server_program():
             password=getpass("Enter password: "),
             database="online_movie_rating",
         ) as mysql_conn:
+            #create detector
+            detector = Detector()
+
             # get the hostname
             host = socket.gethostname()
             port = 5000  # initiate port no above 1024
@@ -32,24 +36,39 @@ def server_program():
             socket_conn.send(message.encode())
             user_input = socket_conn.recv(1024).decode()
             query = "SELECT * FROM reviewers WHERE first_name='" + user_input + "';"
-            result = run_query(mysql_conn, query)
-            socket_conn.send(str(result).encode())  # send data to the client
+            if detector.isInjected(query):
+                result = str("SQL injection detected! \n" + detector.detectedInjectionTypes)
+                socket_conn.send(str(result).encode())  # send data to the client
+            else:
+                result = run_query(mysql_conn, query)
+                socket_conn.send(str(result).encode())  # send data to the client
+            detector.detectedInjectionTypes.clear()
 
             message = "\nSQL injection demonstration #2 - OR 1=1" \
                       "\nEnter Release Year: "
             socket_conn.send(message.encode())
             user_input = socket_conn.recv(1024).decode()
             query = "SELECT * FROM movies WHERE release_year=" + user_input + ";"
-            result = run_query(mysql_conn, query)
-            socket_conn.send(str(result).encode())  # send data to the client
+            if detector.isInjected(query):
+                result = str("SQL injection detected! \n" + detector.detectedInjectionTypes)
+                socket_conn.send(str(result).encode())  # send data to the client
+            else:
+                result = run_query(mysql_conn, query)
+                socket_conn.send(str(result).encode())  # send data to the client
+            detector.detectedInjectionTypes.clear()
 
             message = "\nSQL injection demonstration #3 - Stacking queries" \
                       "\nEnter Release Year: "
             socket_conn.send(message.encode())
             user_input = socket_conn.recv(1024).decode()
             query = "SELECT * FROM movies WHERE release_year=" + user_input + ";"
-            result = run_query(mysql_conn, query)
-            socket_conn.send(str(result).encode())  # send data to the client
+            if detector.isInjected(query):
+                result = str("SQL injection detected! \n" + detector.detectedInjectionTypes)
+                socket_conn.send(str(result).encode())  # send data to the client
+            else:
+                result = run_query(mysql_conn, query)
+                socket_conn.send(str(result).encode())  # send data to the client
+            detector.detectedInjectionTypes.clear()
 
             socket_conn.send("bye".encode())
             socket_conn.close()  # close the connection
