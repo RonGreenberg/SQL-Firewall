@@ -1,7 +1,5 @@
 #Link to tutorial: https://realpython.com/python-mysql/#other-ways-to-connect-python-and-mysql
 
-
-
 from getpass import getpass
 from mysql.connector import connect, Error
 
@@ -13,9 +11,9 @@ try:
     ) as connection:
         print(connection)
         ### CREATE NEW DB
-        # create_db_query = "CREATE DATABASE online_movie_rating"
-        # with connection.cursor() as cursor:
-        #     cursor.execute(create_db_query)
+        create_db_query = "CREATE DATABASE online_movie_rating"
+        with connection.cursor() as cursor:
+            cursor.execute(create_db_query)
 
         ### WATCH ALL EXISTING DBS:
         with connection.cursor() as cursor:
