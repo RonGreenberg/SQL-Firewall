@@ -1,3 +1,7 @@
+#Link to tutorial: https://realpython.com/python-mysql/#other-ways-to-connect-python-and-mysql
+
+
+
 from getpass import getpass
 from mysql.connector import connect, Error
 
