@@ -7,10 +7,8 @@ from mysql.connector import connect, Error
 try:
     with connect(
         host="localhost",
-        #user=input("Enter username: "),
-        #password=getpass("Enter password: ")
-        user = "root",
-        password = "Itamar1847?!",
+        user=input("Enter username: "),
+        password=getpass("Enter password: ")
     ) as connection:
         print(connection)
         ### CREATE NEW DB
@@ -35,10 +33,8 @@ except Error as e:
 try:
     with connect(
             host="localhost",
-            # user=input("Enter username: "),
-            # password=getpass("Enter password: ")
-            user="root",
-            password="Itamar1847?!",
+            user=input("Enter username: "),
+            password=getpass("Enter password: ")
             database="online_movie_rating",
     ) as connection:
         print(connection)
