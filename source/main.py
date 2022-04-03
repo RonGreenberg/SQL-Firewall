@@ -7,7 +7,7 @@ try:
     with connect(
         host="localhost",
         user=input("Enter username: "),
-        password=input("Enter password: "),
+        password=getpass("Enter password: "),
     ) as connection:
         print(connection)
         ### CREATE NEW DB
