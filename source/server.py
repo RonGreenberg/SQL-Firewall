@@ -37,7 +37,7 @@ def server_program():
             user_input = socket_conn.recv(1024).decode()
             query = "SELECT * FROM reviewers WHERE first_name='" + user_input + "';"
             if detector.isInjected(query):
-                result = str("SQL injection detected! \n" + detector.detectedInjectionTypes)
+                result = "SQL injection detected!\nInjection type/s: " + str(detector.detectedInjectionTypes)
                 socket_conn.send(str(result).encode())  # send data to the client
             else:
                 result = run_query(mysql_conn, query)
@@ -50,7 +50,7 @@ def server_program():
             user_input = socket_conn.recv(1024).decode()
             query = "SELECT * FROM movies WHERE release_year=" + user_input + ";"
             if detector.isInjected(query):
-                result = str("SQL injection detected! \n" + detector.detectedInjectionTypes)
+                result = "SQL injection detected!\nInjection type/s: " + str(detector.detectedInjectionTypes)
                 socket_conn.send(str(result).encode())  # send data to the client
             else:
                 result = run_query(mysql_conn, query)
@@ -63,7 +63,7 @@ def server_program():
             user_input = socket_conn.recv(1024).decode()
             query = "SELECT * FROM movies WHERE release_year=" + user_input + ";"
             if detector.isInjected(query):
-                result = str("SQL injection detected! \n" + detector.detectedInjectionTypes)
+                result = "SQL injection detected!\nInjection type/s: " + str(detector.detectedInjectionTypes)
                 socket_conn.send(str(result).encode())  # send data to the client
             else:
                 result = run_query(mysql_conn, query)
