@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
-<body>
-<h1 style="color: #5e9ca0; text-align: center;">SQL Injection Detection</h1>
-<h2 style="color: #2e6c80;">Injection Examples:</h2>
-<pre> </pre>
-<form method="POST" , enctype="multipart/form-data" action='/success'>
-        <label for="full_name">Enter Reviewer First Name:</label><input type="text" name="reviewer_full_name" value="Mary"><br>
-        <input type="submit" value="Submit">
+<body style="background-color: LightBlue">
+        <h1 style="color: #5e9ca0; text-align: center;">SQL Firewall</h1>
+        <div id="injection_examples" style="width: 30%; height: 600px; margin-left: 5%; padding-top: 0.5%; background-color: #888577">
+            <h2 style="color: #2e6c80; margin-left: 5%">Injection Examples:</h2><br>
+            <form method="POST" enctype="multipart/form-data" action='/test' target="result">
+            <label for="first_name" style="margin-left: 5%; margin-right: 1%">Enter Reviewer First Name:</label>
+            <input type="text" name="reviewer_first_name" value="Mary"><br><br>
+            <input type="submit" value="Submit" style="margin-left: 5%">
+            </form>
+        </div>
+        <div id="contentframe" style="position: absolute; top: 15%; left: 50%; height: 70%; width: 45%; background-color: White">
+                <iframe style="position: relative; height: 100%; width: 100%; border: 2px solid black" name="result"></iframe>
+        </div>
 </form>
 <p>&nbsp;</p>
 </body>
