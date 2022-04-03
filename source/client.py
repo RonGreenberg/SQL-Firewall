@@ -9,16 +9,15 @@ def client_program():
     client_socket = socket.socket()  # instantiate
     client_socket.connect((host, port))  # connect to the server
 
-    data = client_socket.recv(1024).decode()  # receive response
-    print(data)  # show in terminal
-
-    message = input(" -> ")  # again take input
-
-    while message.lower().strip() != 'exit':
-        client_socket.send(message.encode())  # send message
+    server_message = client_socket.recv(1024).decode()  # receive response
+    print(server_message)  # show in terminal
+    while server_message.lower().strip() != 'bye':
+        answer_to_server = input()  # again take input
+        client_socket.send(answer_to_server.encode())  # send message
         data = client_socket.recv(1024).decode()  # receive response
         print(data)  # show in terminal
-        message = input(" -> ")  # again take input
+        server_message = client_socket.recv(1024).decode()  # receive response
+        print(server_message)
 
     client_socket.close()  # close the connection
 
