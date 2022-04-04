@@ -10,16 +10,20 @@ class Detector:
         config = configparser.ConfigParser()
         config.read('configurations.ini')
         ret = False
-        if(config['DetectionSettings']['check_stacking_queries'] == True):
+        if (config['DetectionSettings']['check_stacking_queries'] == "true"):
             ret = ret | self.check_stacking_queries(query) # preventing short-circuit evaluation
-        if (config['DetectionSettings']['check_comment_at_the_end'] == True):
+        if (config['DetectionSettings']['check_comment_at_the_end'] == "true"):
             ret = ret | self.check_comment_at_the_end(query)
-        if (config['DetectionSettings']['check_union'] == True):
+        if (config['DetectionSettings']['check_union'] == "true"):
             ret = ret | self.check_union(query)
-        if (config['DetectionSettings']['check_always_true'] == True):
+        if (config['DetectionSettings']['check_always_true'] == "true"):
             ret = ret | self.check_always_true(query)
-        if (config['DetectionSettings']['check_always_false'] == True):
+        if (config['DetectionSettings']['check_always_false'] == "true"):
             ret = ret | self.check_always_false(query)
+        if (config['DetectionSettings']['check_if_blocked_keyword'] == "true"):
+            ret = ret | self.check_if_blocked_keyword(query)
+        if (config['DetectionSettings']['check_if_blocked_literal'] == "true"):
+            ret = ret | self.check_if_blocked_literal(query)
         return ret
 
     def check_stacking_queries(self, query):
@@ -95,6 +99,33 @@ class Detector:
             pass
         return False
 
+    def check_if_blocked_keyword(self, query):
+        config = configparser.ConfigParser()
+        config.read('configurations.ini')
+        blocked_keywords = str(config['Blocked']['blocked_keywords']).split(",")
+
+        parsed = sqlparse.parse(query)
+        for i in range(len(parsed)):
+            q = parsed[i]
+            blocked_keyword = find_blocked_keyword(q, blocked_keywords)
+            if blocked_keyword != "":
+                self.detectedInjectionTypes.append(blocked_keyword + " keyword is forbidden")
+                return True
+        return False
+
+    def check_if_blocked_literal(self, query):
+        config = configparser.ConfigParser()
+        config.read('configurations.ini')
+        blocked_literals = str(config['Blocked']['blocked_literals']).split(",")
+        parsed = sqlparse.parse(query)
+        for i in range(len(parsed)):
+            q = parsed[i]
+            blocked_literal = find_blocked_literal(q, blocked_literals)
+            if blocked_literal != "":
+                self.detectedInjectionTypes.append(blocked_literal + " is forbidden")
+                return True
+        return False
+
     # def check_subquery(self, query):
     #     parsed = sqlparse.parse(query)
     #     where = parsed[0][-1]
@@ -109,6 +140,24 @@ def find_next_comparison(parsed):
             return i.value
         if isinstance(i, sqlparse.sql.TokenList):
             return find_next_comparison(i)
+
+def find_blocked_keyword(parsed, blocked_keywords):
+    for i in parsed.tokens:
+        if i.ttype == sqlparse.tokens.Keyword.DDL and str(i.value).upper() in blocked_keywords:
+            return str(i.value)
+        if isinstance(i, sqlparse.sql.TokenList):
+            return find_blocked_keyword(i, blocked_keywords)
+    return ""
+
+def find_blocked_literal(parsed, blocked_literals):
+    for i in parsed.tokens:
+        if i.ttype == sqlparse.tokens.Literal.String.Single and str(i.value) in blocked_literals:
+            return str(i.value)
+        if isinstance(i, sqlparse.sql.TokenList):
+            blocked_literal = find_blocked_literal(i, blocked_literals)
+            if blocked_literal != "":
+                return blocked_literal
+    return ""
 
 def test_detector():
     detector = Detector()
@@ -130,8 +179,13 @@ def test_detector():
     detector.detectedInjectionTypes.clear()
     detector.isInjected("SELECT UserId, Name, Password FROM Users WHERE UserId = 105 or ''='';")
     print(detector.detectedInjectionTypes)
+
+    # config = configparser.ConfigParser()
+    # config.read('configurations.ini')
+    # blocked_literals = str(config['Blocked']['blocked_literals']).split(",")
+    # print(find_blocked_literal(sqlparse.parse("SELECT * FROM reviewers WHERE first_name='Mary'")[0], blocked_literals))
     #
     # parsed = sqlparse.parse("SELECT name FROM syscolumns WHERE id =(SELECT id FROM sysobjects WHERE name = 'known_table_name')")
     # parsed[0]._pprint_tree()
 
-test_detector()
+#test_detector()
