@@ -1,5 +1,5 @@
 # SQL Firewall
-A tool for detection of SQL Injection attempts, created together with [Itamar Azmoni](https://github.com/Itamar-Azmoni) as part of Colman Hackathon 2022, sponsored by Spot by NetApp.
+A tool for detection of SQL Injection attempts, created together with [Itamar Azmoni](https://github.com/Itamar-Azmoni) as part of Colman Hackathon 2022, sponsored by [Spot](https://github.com/spotinst).
 Won 3rd place along with the project of the rest of our team.
 
 ![injection_detection](https://user-images.githubusercontent.com/89278943/161638964-69aa04e4-f03f-4deb-8764-d93845af112b.jpeg)
