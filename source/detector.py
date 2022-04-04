@@ -1,16 +1,25 @@
 import sqlparse
+import configparser
+
 
 class Detector:
     def __init__(self):
         self.detectedInjectionTypes = []
 
     def isInjected(self, query):
+        config = configparser.ConfigParser()
+        config.read('configurations.ini')
         ret = False
-        ret = ret | self.check_stacking_queries(query) # preventing short-circuit evaluation
-        ret = ret | self.check_comment_at_the_end(query)
-        ret = ret | self.check_union(query)
-        ret = ret | self.check_always_true(query)
-        ret = ret | self.check_always_false(query)
+        if(config['DetectionSettings']['check_stacking_queries'] == True):
+            ret = ret | self.check_stacking_queries(query) # preventing short-circuit evaluation
+        if (config['DetectionSettings']['check_comment_at_the_end'] == True):
+            ret = ret | self.check_comment_at_the_end(query)
+        if (config['DetectionSettings']['check_union'] == True):
+            ret = ret | self.check_union(query)
+        if (config['DetectionSettings']['check_always_true'] == True):
+            ret = ret | self.check_always_true(query)
+        if (config['DetectionSettings']['check_always_false'] == True):
+            ret = ret | self.check_always_false(query)
         return ret
 
     def check_stacking_queries(self, query):
