@@ -51,7 +51,7 @@ class serverHandler(SimpleHTTPRequestHandler):
                         ) as mysql_conn:
                             with mysql_conn.cursor(buffered=True) as cursor:
                                 cursor.execute(query)
-                                mysql_conn.commit()
+                                #mysql_conn.commit()
                                 result = """<html><h1>Result:</h1><table border=1 style="width: 100%; text-align: center"><tr>"""
                                 for tuple in cursor.description:
                                     result += "<th>" + tuple[0] + "</th>"
@@ -77,7 +77,7 @@ def main():
     PORT = 5555
     HOST_NAME = "localhost"
     server = HTTPServer((HOST_NAME, PORT), serverHandler)
-    print("server running on port %s" % PORT)
+    print("Server running on port %s" % PORT)
 
     global mysql_user
     mysql_user = input("Enter MySQL username: ")
@@ -95,7 +95,7 @@ def main():
         print(e)
         exit()
 
-    print("Waiting for connection...")
+    print("Server waiting for connection...")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

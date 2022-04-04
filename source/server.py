@@ -78,7 +78,7 @@ def server_program():
 def run_query(mysql_conn, query):
     with mysql_conn.cursor(buffered=True) as cursor:
         cursor.execute(query)
-        mysql_conn.commit()
+        #mysql_conn.commit()
         return cursor.fetchall()
 
 if __name__ == '__main__':
